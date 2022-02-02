@@ -209,7 +209,7 @@ export default function Home() {
   return (
     <div className='text-center mx-auto'>
       <div className='bg-white/95 fixed top-0 left-0 right-0 bottom-0 z-10'></div>
-      <div className='bg-[url("/atcoder.svg")] fixed top-0 left-0 right-0 bottom-0 z-0'></div>
+      <div className='bg-[url("./atcoder.svg")] fixed top-0 left-0 right-0 bottom-0 z-0'></div>
       <div className='relative z-50 max-w-screen-sm mx-auto'>
         <h1 className='text-center text-2xl lg:text-4xl mt-4 font-bold'>AtCoder Friends</h1>
         {query.contest?<h2 className='text-center text-2xl lg:text-3xl my-2'>「{query.contest}」</h2>:null}
