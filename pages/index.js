@@ -102,9 +102,15 @@ function div_hist(d) {
   const problem_id_to_str = (p) => {
     const t = p.split("_");
     const a = t.slice(0,-1).join("_")
+    let aa = ""
+    if (a.length>6) {
+      aa = a.slice(0,6)+".."
+    }else{
+      aa = a
+    }
     const b = t[t.length-1]
     //console.log(a,b)
-    return a + "-" + b
+    return aa + "-" + b
   }
     return (
       <tbody>
@@ -112,8 +118,8 @@ function div_hist(d) {
           return (
             <tr key={d.id}>
               <td className='w-1/3 px-1'>{unix_to_str(d.epoch_second)}</td>
-              <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${get_contest(d.problem_id)}/tasks/${d.problem_id}`}><a className='hover:underline'>{problem_id_to_str(d.problem_id.toUpperCase())}</a></Link></td>
-              <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${get_contest(d.problem_id)}/submissions/${d.id}`}><a className='hover:underline' style={{color: user_color[d.user_id]}}>{d.user_id}</a></Link></td>
+              <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${d.contest_id}/tasks/${d.problem_id}`}><a className='hover:underline'>{problem_id_to_str(d.problem_id.toUpperCase())}</a></Link></td>
+              <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${d.contest_id}/submissions/${d.id}`}><a className='hover:underline' style={{color: user_color[d.user_id]}}>{d.user_id}</a></Link></td>
             </tr>
           )
         })}
