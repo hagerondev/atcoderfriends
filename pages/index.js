@@ -16,6 +16,7 @@ async function div_friends(friends, state) {
   const users = friends.split(",");
   for (const user of users) {
     let url = "https://kyopro-ratings.herokuapp.com/json?atcoder="+user
+    console.log(url)
     const res = await fetch(url);
     const data = await res.json();
     //console.log("API",data)
@@ -124,10 +125,10 @@ function div_hist(d) {
 async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
   if (friends===undefined) return null;
   console.log("get_data start",friends)
-  if (from_sec==-1) {
-    from_sec = Math.round(new Date().getTime()/1000-60*60*24*31*1);
-    console.log(from_sec)
-  }
+  // if (from_sec==-1) {
+  //   from_sec = Math.round(new Date().getTime()/1000-60*60*24*31*1);
+  //   console.log(from_sec)
+  // }
   if (to_sec==-1) {
     to_sec = new Date().getTime()/1000;
   }
@@ -139,6 +140,7 @@ async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
   let sumarr = [];
   for (const friend of friends.split(",")) {
     let url = `https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user=${friend}&from_second=${from_sec}`
+    console.log(url)
     const res = await fetch(url)
     const r = await res.json()
     view_data.labels.push(friend)
@@ -196,9 +198,9 @@ export default function Home() {
   useEffect(() => {
     if (query.friends!==undefined) {
       div_friends(query.friends, friends_section_state)
-      get_data(query.friends,friends_data_state,query.start.query,query.end)
+      get_data(query.friends,friends_data_state,query.start,query.end)
       setInterval(() => {
-        get_data(query.friends,friends_data_state,query.start,query,query.end)
+        get_data(query.friends,friends_data_state,query.start,query.end)
       }, 10000+query.friends.split(",").length*1000);
     }
   },[query])
