@@ -203,7 +203,8 @@ export default function Home() {
   }, [last_ac])
 
   useEffect(() => {
-    if (query.friends!==undefined) {
+    //console.log(query, user_color)
+    if (query.friends!==undefined && Object.keys(user_color).length==query.friends.split(",").length) {
       //console.log("user_color",user_color)
       get_data(query.friends,friends_data_state,query.start,query.end)
       setInterval(() => {
