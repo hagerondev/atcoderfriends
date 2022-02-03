@@ -12,11 +12,11 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const user_color = {};
 
 async function div_friends(friends, state) {
-  if (friends===undefined) return null;
+  if (friends===undefined) {state(<div>読み込み中</div>);return;}
   const users = friends.split(",");
   for (const user of users) {
     let url = "https://kyopro-ratings.herokuapp.com/json?atcoder="+user
-    console.log(url)
+    //console.log(url)
     const res = await fetch(url);
     const data = await res.json();
     //console.log("API",data)
@@ -76,7 +76,7 @@ function BasePie(labels) {
 function div_point(d) {
   const pie = BasePie(d.labels);
   pie.datasets[0].data = d.point_data;
-  console.log("point 更新")
+  //console.log("point 更新")
   return <Pie data={pie} />
 }
 
@@ -130,7 +130,7 @@ function div_hist(d) {
 
 async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
   if (friends===undefined) return null;
-  console.log("get_data start",friends)
+  //console.log("get_data start",friends)
   // if (from_sec==-1) {
   //   from_sec = Math.round(new Date().getTime()/1000-60*60*24*31*1);
   //   console.log(from_sec)
@@ -146,7 +146,7 @@ async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
   let sumarr = [];
   for (const friend of friends.split(",")) {
     let url = `https://kenkoooo.com/atcoder/atcoder-api/v3/user/submissions?user=${friend}&from_second=${from_sec}`
-    console.log(url)
+    //console.log(url)
     const res = await fetch(url)
     const r = await res.json()
     view_data.labels.push(friend)
@@ -162,17 +162,17 @@ async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
     view_data.point_data.push(p_sum)
     view_data.cnt_data.push(r.length)
     //console.log(r)
-    console.log("request",friend)
+    //console.log("request",friend)
     if (friends.split(",").length===view_data.labels.length) {
       sumarr.sort(function(a,b) {
         return b.epoch_second - a.epoch_second;
       })
       view_data.hist = sumarr;
-      console.log("log",view_data)
+      //console.log("log",view_data)
       f_state(view_data)
       return view_data;
     }
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 300))
   }
 }
 
@@ -184,6 +184,7 @@ export default function Home() {
   const [cnt_section, cnt_section_state] = useState(null);
   const [hist_section, hist_section_state] = useState(null);
   const [last_ac, last_ac_state] = useState(-1);
+  const [friends_section, friends_section_state] = useState(null);
 
   useEffect(() => {
     //friends_data_state(get_data(query.friends))
@@ -203,16 +204,17 @@ export default function Home() {
 
   useEffect(() => {
     if (query.friends!==undefined) {
-      div_friends(query.friends, friends_section_state)
+      //console.log("user_color",user_color)
       get_data(query.friends,friends_data_state,query.start,query.end)
       setInterval(() => {
         get_data(query.friends,friends_data_state,query.start,query.end)
-      }, 10000+query.friends.split(",").length*1000);
+      }, 10000+query.friends.split(",").length*300);
     }
+  },[friends_section])
+
+  useEffect(() => {
+    div_friends(query.friends, friends_section_state)
   },[query])
-
-  const [friends_section, friends_section_state] = useState(null);
-
 
   return (
     <div className='text-center mx-auto'>
