@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 
-import React, { useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { type } from 'os';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -12,10 +12,10 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const user_color = {};
 
 async function div_friends(friends, state) {
-  if (friends===undefined) {state(<div>読み込み中</div>);return;}
+  if (friends === undefined) { state(<div>読み込み中</div>); return; }
   const users = friends.split(",");
   for (const user of users) {
-    let url = "https://kyopro-ratings.herokuapp.com/json?atcoder="+user
+    let url = "https://kyopro-ratings.herokuapp.com/json?atcoder=" + user
     //console.log(url)
     const res = await fetch(url);
     const data = await res.json();
@@ -28,17 +28,17 @@ async function div_friends(friends, state) {
     <div className='text-center text-lg lg:text-xl'>
       <div>参加者</div>
       <div>
-        {Object.keys(user_color).map( u => {
+        {Object.keys(user_color).map(u => {
           const c = user_color[u];
-          return <Link href={"https://atcoder.jp/users/"+u} key={u+c}><a className={'mx-2 hover:underline'} style={{color: c}}>{u}</a></Link>
+          return <Link href={"https://atcoder.jp/users/" + u} key={u + c}><a className={'mx-2 hover:underline'} style={{ color: c }}>{u}</a></Link>
         })}
       </div>
     </div>
   )
 }
 
-function div_date(start,end) {
-  if(start===undefined || end===undefined) return null;
+function div_date(start, end) {
+  if (start === undefined || end === undefined) return null;
   return (
     <div className='text-center text-lg lg:text-xl'>
       <div>期間</div>
@@ -87,56 +87,58 @@ function div_cnt(d) {
 }
 
 const unix_to_str = (t) => {
-  const d = new Date(t*1000);
+  const d = new Date(t * 1000);
   return d.toLocaleDateString() + "\n" + d.toLocaleTimeString();
 }
 
 function div_hist(d) {
-  if (d.hist===undefined) return null
-  
+  if (d.hist === undefined) return null
+
   const get_contest = (p) => {
     const t = p.split("_");
-    const a = t.slice(0,-1).join("_");
+    const a = t.slice(0, -1).join("_");
     return a;
   }
   const problem_id_to_str = (p) => {
     const t = p.split("_");
-    const a = t.slice(0,-1).join("_")
+    const a = t.slice(0, -1).join("_")
     let aa = ""
-    if (a.length>6) {
-      aa = a.slice(0,6)+".."
-    }else{
+    if (a.length > 6) {
+      aa = a.slice(0, 6) + ".."
+    } else {
       aa = a
     }
-    const b = t[t.length-1]
+    const b = t[t.length - 1]
     //console.log(a,b)
     return aa + "-" + b
   }
-    return (
-      <tbody>
-        {d.hist.map(d => {
-          return (
-            <tr key={d.id}>
-              <td className='w-1/3 px-1'>{unix_to_str(d.epoch_second)}</td>
-              <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${d.contest_id}/tasks/${d.problem_id}`}><a className='hover:underline'>{problem_id_to_str(d.problem_id.toUpperCase())}</a></Link></td>
-              <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${d.contest_id}/submissions/${d.id}`}><a className='hover:underline' style={{color: user_color[d.user_id]}}>{d.user_id}</a></Link></td>
-            </tr>
-          )
-        })}
-      </tbody>
-    )
+  console.log(d)
+  console.log(user_color)
+  return (
+    <tbody>
+      {d.hist.map(d => {
+        return (
+          <tr key={d.id}>
+            <td className='w-1/3 px-1'>{unix_to_str(d.epoch_second)}</td>
+            <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${d.contest_id}/tasks/${d.problem_id}`}><a className='hover:underline'>{problem_id_to_str(d.problem_id.toUpperCase())}</a></Link></td>
+            <td className='w-1/3 px-1'><Link href={`https://atcoder.jp/contests/${d.contest_id}/submissions/${d.id}`}><a className='hover:underline' style={{ color: user_color[d.user_id.toLowerCase()] }}>{d.user_id}</a></Link></td>
+          </tr>
+        )
+      })}
+    </tbody>
+  )
 }
 
 
-async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
-  if (friends===undefined) return null;
+async function get_data(friends, f_state, from_sec = -1, to_sec = -1) {
+  if (friends === undefined) return null;
   //console.log("get_data start",friends)
   // if (from_sec==-1) {
   //   from_sec = Math.round(new Date().getTime()/1000-60*60*24*31*1);
   //   console.log(from_sec)
   // }
-  if (to_sec==-1) {
-    to_sec = new Date().getTime()/1000;
+  if (to_sec == -1) {
+    to_sec = new Date().getTime() / 1000;
   }
   const view_data = {
     labels: [],
@@ -152,8 +154,8 @@ async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
     view_data.labels.push(friend)
     let p_sum = 0;
     let c_sum = 0;
-    for( const p of r ) {
-      if (p.epoch_second<=to_sec && p.result==="AC" && ((p.point%10===0 && p.point <= 5000) || (p.problem_id.indexOf("abc")!==-1 || p.problem_id.indexOf("arc")!==-1 || p.problem_id.indexOf("agc")!==-1))) {
+    for (const p of r) {
+      if (p.epoch_second <= to_sec && p.result === "AC" && ((p.point % 10 === 0 && p.point <= 5000) || (p.problem_id.indexOf("abc") !== -1 || p.problem_id.indexOf("arc") !== -1 || p.problem_id.indexOf("agc") !== -1))) {
         p_sum += p.point;
         c_sum++;
         sumarr.push(p)
@@ -163,8 +165,8 @@ async function get_data(friends,f_state,from_sec=-1,to_sec=-1) {
     view_data.cnt_data.push(r.length)
     //console.log(r)
     //console.log("request",friend)
-    if (friends.split(",").length===view_data.labels.length) {
-      sumarr.sort(function(a,b) {
+    if (friends.split(",").length === view_data.labels.length) {
+      sumarr.sort(function (a, b) {
         return b.epoch_second - a.epoch_second;
       })
       view_data.hist = sumarr;
@@ -180,7 +182,7 @@ export default function Home() {
   const router = useRouter();
   const query = router.query;
   const [friends_data, friends_data_state] = useState({})
-  const [point_section,point_section_state] = useState(null);
+  const [point_section, point_section_state] = useState(null);
   const [cnt_section, cnt_section_state] = useState(null);
   const [hist_section, hist_section_state] = useState(null);
   const [last_ac, last_ac_state] = useState(-1);
@@ -188,13 +190,13 @@ export default function Home() {
 
   useEffect(() => {
     //friends_data_state(get_data(query.friends))
-    if (friends_data.hist!==undefined && friends_data.hist.length!==0 && last_ac!=friends_data.hist[0].epoch_second) {
+    if (friends_data.hist !== undefined && friends_data.hist.length !== 0 && last_ac != friends_data.hist[0].epoch_second) {
       console.log("new data")
       last_ac_state(friends_data.hist[0].epoch_second);
-    }else{
+    } else {
       console.log("latest")
     }
-  },[friends_data])
+  }, [friends_data])
 
   useEffect(() => {
     point_section_state(div_point(friends_data));
@@ -204,26 +206,26 @@ export default function Home() {
 
   useEffect(() => {
     //console.log(query, user_color)
-    if (query.friends!==undefined && Object.keys(user_color).length==query.friends.split(",").length) {
+    if (query.friends !== undefined && Object.keys(user_color).length == query.friends.split(",").length) {
       //console.log("user_color",user_color)
-      get_data(query.friends,friends_data_state,query.start,query.end)
+      get_data(query.friends, friends_data_state, query.start, query.end)
       setInterval(() => {
-        get_data(query.friends,friends_data_state,query.start,query.end)
-      }, 10000+query.friends.split(",").length*300);
+        get_data(query.friends, friends_data_state, query.start, query.end)
+      }, 10000 + query.friends.split(",").length * 300);
     }
-  },[friends_section])
+  }, [friends_section])
 
   useEffect(() => {
     div_friends(query.friends, friends_section_state)
-  },[query])
+  }, [query])
 
   return (
     <div className='text-center mx-auto'>
       <div className='bg-white/95 fixed top-0 left-0 right-0 bottom-0 z-10'></div>
-      <div className='fixed top-0 left-0 right-0 bottom-0 z-0' style={{"backgroundImage":"url(./atcoder.svg)"}}></div>
+      <div className='fixed top-0 left-0 right-0 bottom-0 z-0' style={{ "backgroundImage": "url(./atcoder.svg)" }}></div>
       <div className='relative z-50 max-w-screen-sm mx-auto'>
         <h1 className='text-center text-2xl lg:text-4xl mt-4 font-bold'>AtCoder Friends</h1>
-        {query.contest?<h2 className='text-center text-2xl lg:text-3xl my-2'>「{query.contest}」</h2>:null}
+        {query.contest ? <h2 className='text-center text-2xl lg:text-3xl my-2'>「{query.contest}」</h2> : null}
         <div className='p-2 my-2'>
           {friends_section}
         </div>
@@ -250,7 +252,7 @@ export default function Home() {
             {hist_section}
           </table>
         </div>
-        
+
       </div>
     </div>
   )
